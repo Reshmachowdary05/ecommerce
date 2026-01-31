@@ -36,9 +36,12 @@ router.post("/add",isAuthenticated,async (req,res)=>{
       cart = new Cart({user:req.userId,items:[]})
     }
     const existingItem= cart.items.find((item)=>item.product.toString()==productId) 
-    if(existingItem){
-      existingItem.quantity+=quantity
-    }
+    if (existingItem) {
+  existingItem.quantity += quantity
+  await cart.save()
+  return res.status(200).json({ message: "Quantity updated" })
+}
+
     else{
       const product = await Product.findById(productId)
       if(!product){
